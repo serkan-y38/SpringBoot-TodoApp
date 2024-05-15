@@ -1,6 +1,6 @@
 package com.yilmaz.todoapp.config;
 
-import com.yilmaz.todoapp.service.JwtService;
+import com.yilmaz.todoapp.service.auth.JwtService;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

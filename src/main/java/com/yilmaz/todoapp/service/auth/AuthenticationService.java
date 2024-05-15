@@ -1,4 +1,4 @@
-package com.yilmaz.todoapp.service;
+package com.yilmaz.todoapp.service.auth;
 
 import com.yilmaz.todoapp.dto.auth.LoginRequest;
 import com.yilmaz.todoapp.dto.auth.RegisterRequest;

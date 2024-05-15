@@ -2,7 +2,7 @@ package com.yilmaz.todoapp.controller;
 
 import com.yilmaz.todoapp.dto.auth.LoginRequest;
 import com.yilmaz.todoapp.dto.auth.RegisterRequest;
-import com.yilmaz.todoapp.service.AuthenticationService;
+import com.yilmaz.todoapp.service.auth.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
