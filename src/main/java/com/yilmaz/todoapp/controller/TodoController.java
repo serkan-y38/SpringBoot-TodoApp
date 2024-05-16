@@ -46,4 +46,17 @@ public class TodoController {
         return (!todoDTO.isEmpty()) ? ResponseEntity.ok(todoDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    /* Paginate todos */
+    @GetMapping("/paginate-todos/{userId}")
+    ResponseEntity<?> getAllTodos(
+            @PathVariable Integer userId,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "2") Integer size,
+            @RequestParam(value = "orderBy", defaultValue = "id") String orderBy,
+            @RequestParam(value = "direction", defaultValue = "DESC") String direction
+    ) {
+        List<TodoDTO> paginatedTodos = todoService.getAllTodos(userId, page, size, orderBy, direction);
+        return (!paginatedTodos.isEmpty()) ? ResponseEntity.ok(paginatedTodos) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
 }

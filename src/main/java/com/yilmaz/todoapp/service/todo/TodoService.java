@@ -16,4 +16,6 @@ public interface TodoService {
 
     List<TodoDTO> getAllTodos(Integer userId);
 
+    List<TodoDTO> getAllTodos(Integer userId, Integer page, Integer size, String orderBy, String direction);
+
 }
