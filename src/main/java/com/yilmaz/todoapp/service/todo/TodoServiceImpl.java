@@ -93,4 +93,15 @@ public class TodoServiceImpl implements TodoService {
         return null;
     }
 
+    @Override
+    public List<TodoDTO> searchTodos(String query, Integer userId, Integer page, Integer size, String orderBy, String direction) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.valueOf(direction), orderBy);
+            Page<Todo> todoPage = todoRepository.findAllByTitleContainingAndUser(query, optionalUser.get(), pageRequest);
+            return todoPage.stream().map(Todo::getTodoDTO).collect(Collectors.toList());
+        }
+        return null;
+    }
+
 }

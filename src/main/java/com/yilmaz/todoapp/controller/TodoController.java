@@ -3,6 +3,7 @@ package com.yilmaz.todoapp.controller;
 import com.yilmaz.todoapp.dto.todo.TodoDTO;
 import com.yilmaz.todoapp.service.todo.TodoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,11 @@ public class TodoController {
 
     private final TodoService todoService;
 
+    @GetMapping
+    public ResponseEntity<?> getJwtToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        return new ResponseEntity<>(authHeader.substring(7), HttpStatus.OK);
+    }
+
     @PostMapping("/create-todo")
     public ResponseEntity<?> createTodo(@RequestBody TodoDTO todoDTO) {
         return todoService.createTodo(todoDTO) ? new ResponseEntity<>("Todo created successfully.", HttpStatus.OK) :
@@ -23,19 +29,28 @@ public class TodoController {
     }
 
     @PutMapping("/update-todo/{userId}/{todoId}")
-    public ResponseEntity<?> updateTodo(@PathVariable Integer userId, @PathVariable Integer todoId, @RequestBody TodoDTO todoDTO) {
+    public ResponseEntity<?> updateTodo(
+            @PathVariable Integer userId, @PathVariable Integer todoId,
+            @RequestBody TodoDTO todoDTO
+    ) {
         return todoService.updateTodo(userId, todoId, todoDTO) ? new ResponseEntity<>("Todo updated successfully.", HttpStatus.OK) :
                 new ResponseEntity<>("Todo not updated. Todo does not exist.", HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/delete-todo/{userId}/{todoId}")
-    public ResponseEntity<?> deleteTodo(@PathVariable Integer userId, @PathVariable Integer todoId) {
+    public ResponseEntity<?> deleteTodo(
+            @PathVariable Integer userId,
+            @PathVariable Integer todoId
+    ) {
         return todoService.deleteTodo(userId, todoId) ? new ResponseEntity<>("Todo deleted successfully", HttpStatus.OK) :
                 new ResponseEntity<>("Todo not deleted. Todo does not exist.", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/get-todo/{userId}/{todoId}")
-    public ResponseEntity<?> getTodo(@PathVariable Integer userId, @PathVariable Integer todoId) {
+    public ResponseEntity<?> getTodo(
+            @PathVariable Integer userId,
+            @PathVariable Integer todoId
+    ) {
         TodoDTO todoDTO = todoService.getTodoById(userId, todoId);
         return (todoDTO != null) ? ResponseEntity.ok(todoDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -48,7 +63,7 @@ public class TodoController {
 
     /* Paginate todos */
     @GetMapping("/paginate-todos/{userId}")
-    ResponseEntity<?> getAllTodos(
+    public ResponseEntity<?> getAllTodos(
             @PathVariable Integer userId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "2") Integer size,
@@ -56,6 +71,19 @@ public class TodoController {
             @RequestParam(value = "direction", defaultValue = "DESC") String direction
     ) {
         List<TodoDTO> paginatedTodos = todoService.getAllTodos(userId, page, size, orderBy, direction);
+        return (!paginatedTodos.isEmpty()) ? ResponseEntity.ok(paginatedTodos) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping("/search-todos/{userId}")
+    public ResponseEntity<?> searchTodos(
+            @PathVariable Integer userId,
+            @RequestParam(value = "query") String query,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "2") Integer size,
+            @RequestParam(value = "orderBy", defaultValue = "id") String orderBy,
+            @RequestParam(value = "direction", defaultValue = "DESC") String direction
+    ) {
+        List<TodoDTO> paginatedTodos = todoService.searchTodos(query, userId, page, size, orderBy, direction);
         return (!paginatedTodos.isEmpty()) ? ResponseEntity.ok(paginatedTodos) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 

@@ -18,4 +18,6 @@ public interface TodoService {
 
     List<TodoDTO> getAllTodos(Integer userId, Integer page, Integer size, String orderBy, String direction);
 
+    List<TodoDTO> searchTodos(String query, Integer userId, Integer page, Integer size, String orderBy, String direction);
+
 }
