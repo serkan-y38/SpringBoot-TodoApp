@@ -328,3 +328,8 @@ The response will be a JSON object conforming to the following schema:
 ]
 
  ```
+<br/>
+
+![Screenshot 2024-05-17 154334](https://github.com/serkan-y38/SpringBoot-TodoApp/assets/96957200/6ec901b9-12e6-4d9a-951c-1256cce28d2a)
+
+
