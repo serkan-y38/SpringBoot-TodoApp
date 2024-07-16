@@ -5,14 +5,17 @@ import com.yilmaz.todoapp.dto.auth.RegisterRequest;
 import com.yilmaz.todoapp.service.auth.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+
+import static com.yilmaz.todoapp.utils.MyResponseMessages.LOGIN_ERROR_MESSAGE;
+import static com.yilmaz.todoapp.utils.MyResponseMessages.REGISTRATION_ERROR_MESSAGE;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -23,15 +26,22 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        return service.register(request);
+        try {
+            return service.register(request).get();
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            return new ResponseEntity<>(REGISTRATION_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/login")
-    public void authenticate(
-            @RequestBody LoginRequest request,
-            HttpServletResponse response
-    ) throws IOException, JSONException {
-        service.authenticate(request, response);
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+        try {
+            return service.login(request, response).get();
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            return new ResponseEntity<>(LOGIN_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
